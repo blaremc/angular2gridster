@@ -2,6 +2,7 @@ import { Observable, of, fromEvent, pipe, merge } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged } from 'rxjs/operators';
 
 import { IGridsterOptions } from './IGridsterOptions';
+import {ElementRef} from '@angular/core';
 
 export class GridsterOptions {
     direction: string;
@@ -27,7 +28,7 @@ export class GridsterOptions {
         resizable: false,
         useCSSTransforms: false,
         floating: true,
-        tolerance: 'pointer'
+        tolerance: 'pointer',
     };
 
     change: Observable<IGridsterOptions>;
@@ -42,7 +43,7 @@ export class GridsterOptions {
         xl: 1200 // Extra large
     };
 
-    constructor(config: IGridsterOptions) {
+    constructor(config: IGridsterOptions, element: ElementRef) {
         this.basicOptions = config;
 
         this.responsiveOptions = this.extendResponsiveOptions(config.responsiveOptions || []);
@@ -51,7 +52,10 @@ export class GridsterOptions {
                 of(this.getOptionsByWidth(document.documentElement.clientWidth)),
                 fromEvent(window, 'resize').pipe(
                     debounceTime(config.responsiveDebounce || 0),
-                    map((event: Event) => this.getOptionsByWidth(document.documentElement.clientWidth))
+                    map((event: Event) => {
+                      console.log('resize', element, element.nativeElement.offsetWidth);
+                      return this.getOptionsByWidth(element.nativeElement.offsetWidth);
+                    })
                 )
             ).pipe(distinctUntilChanged(null, (options: any) => options.minWidth));
     }

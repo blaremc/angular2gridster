@@ -32,7 +32,7 @@ import { GridsterOptions } from './GridsterOptions';
 
 @Component({
     selector: 'ngx-gridster',
-    template: `<div class="gridster-container">
+    template: `<div class="gridster-container" #container>
       <ng-content></ng-content>
       <div class="position-highlight" style="display:none;" #positionHighlight>
         <div class="inner"></div>
@@ -90,6 +90,8 @@ export class GridsterComponent implements OnInit, AfterContentInit, OnDestroy {
     @HostBinding('class.gridster--resizing') isResizing = false;
 
     @HostBinding('class.gridster--ready') isReady = false;
+
+    @ViewChild('container') container: ElementRef;
     gridster: GridsterService;
     $element: HTMLElement;
 
@@ -109,7 +111,7 @@ export class GridsterComponent implements OnInit, AfterContentInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.gridsterOptions = new GridsterOptions(this.options);
+        this.gridsterOptions = new GridsterOptions(this.options, this.container);
 
         if (this.options.useCSSTransforms) {
             this.$element.classList.add('css-transform');
