@@ -53,7 +53,6 @@ export class GridsterOptions {
                 fromEvent(window, 'resize').pipe(
                     debounceTime(config.responsiveDebounce || 0),
                     map((event: Event) => {
-                      console.log('resize', element, element.nativeElement.offsetWidth);
                       return this.getOptionsByWidth(element.nativeElement.offsetWidth);
                     })
                 )
